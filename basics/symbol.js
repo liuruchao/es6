@@ -24,3 +24,68 @@
 
     Boolean(s3);   //true
 }
+
+// 2.Symbol.prototype.description 添加描述,之前读取描述，只能显示的转为字符串，ES2019提供实例属性description,直接返回描述
+{
+    const s = Symbol('description');
+
+    console.log(String(s));     //Symbol(description)
+    console.log(s.toString());  //Symbol(description)
+
+    console.log(s.description)   //'description'
+}
+
+//3.作为属性名Symbol
+{
+    let s = Symbol();
+
+    // 写法1
+    let a1 = {};
+    a1[s] = 'hello symbol';
+    // 写法二
+    let a2 ={
+        [s]:'hello symbol'
+    }
+    console.log(a2[s]);
+    // 写法三
+    let a3 = {};
+    Object.defineProperty(a3,s,{value:'hello symbol'})
+
+    // symbol作为对象属性名，不能用点运算符，方括号中不用引号
+    let a4 = {};
+    a4.s = 'hello'
+    a4[s]  //undefined
+    a4['s'] //hello
+}
+
+// 4.遍历属性名，Symbol作为对象属性名，不能用for..in ,for..of遍历出来，也不会被Object.keys(),Object.getOwnPropertyName(),JSON.stringify()返回。
+// 但一个Object.getOwnPropertySymbols方法，获得指定对象的所有Symbol属性名
+{
+    const obj = {};
+    let a = Symbol('a');
+    let b = Symbol('b');
+
+    obj[a] = 'a';
+    obj[b] = 'b';
+    obj['c'] = 'c'
+    obj[Symbol('d')] = 'd';
+
+    console.log(Object.keys(obj));  //[ 'c' ]
+    const objectSymbols = Object.getOwnPropertySymbols(obj);
+    console.log(objectSymbols);   //[ Symbol(a), Symbol(b) ]
+}
+
+// 5.Symbol.for(),能够重用同一个Symbol值，参数接受一个字符串，先全局搜索有没有以该参数为名称的Symbol值，如果有返回这个，没有就创建新的
+// Symbol.keyFor()，返回已登记的Symbol类型值得key
+{
+    Symbol.for('foo') === Symbol.for('foo');  //true
+    Symbol('foo') === Symbol('foo');  //false
+    
+    let s1 = Symbol.for('foo');
+    Symbol.keyFor(s1);  //'foo'
+
+    //未登记的Symbol值
+    let s2 = Symbol('foo');
+    Symbol.keyFor(s2); //undefined
+
+}
