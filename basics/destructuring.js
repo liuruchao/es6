@@ -73,8 +73,83 @@
             {y:'world'}
         ]
     }
-    let {p:[x,{y}]} = obj;
+    let {p:[x,{y}]} = obj1;
 
-    // 默认值的解构赋值和数组相同，生效条件严格等于undefined
  }
+ // 默认值的解构赋值和数组相同，生效条件严格等于undefined
+ {
+    var {x = 3} = {};
+    x //3
+    var {x,y = 5} = {x :1};
+    x //1
 
+    var {x:y = 3} = {};
+    y //3
+
+    var {x = 3} = {x:undefined};
+    x //3 
+    var {x = 3} = {x:null};
+    x //null
+}
+
+// 3.字符串的解构赋值，此时的字符串转换成了类似数组的对象
+{
+    const [a,b,c] = 'hello';
+    a //h
+    b //e
+    c //l
+    const {length:len} = 'hello';
+    console.log(len);
+}
+
+// 4.用途
+{
+    // 1.交换变量
+    {
+        let x = 1;
+        let y = 2;
+        [x,y] = [y,x];
+        console.log(x,y)
+    }
+    // 2.从函数返回多个值
+    {
+        function example1(){
+            return [2,3,4];
+        }
+        let [a,b,c] = example1();
+        console.log('函数返回值',a,b,c);
+
+        function example2(){
+            return {
+                foo:'test',
+                bar:'testbar'
+            }
+        }
+        let {foo,bar} = example2();
+        console.log('函数返回对象值',foo,bar)
+    }
+    // 3.函数参数的定义
+    {
+        // 参数是一组有次序的值
+        function f([a,b,c]){
+            //code
+        }
+        f([3,5,2]);
+
+        //参数是无次序的值
+        function f1({x,y,z}){
+            //code
+        }
+        f1({y:2,x:9,z:0})
+    }
+    // 4.提取json数据
+    {
+        let jsonData = {
+            id:42,
+            status:'ok',
+            data:[867,5309]
+        }
+        let {id,status,data:num} = jsonData;
+        console.log(id,status,num)
+    }
+}
