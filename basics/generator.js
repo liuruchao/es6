@@ -1,6 +1,7 @@
 // 1.generator 生成器函数，内部可封装多个状态，执行后不会立即执行内部的代码，
 //而是返回一个遍历器对象，通过next()调用。调用next()继续执行内部代码，yield暂停执行代码，并返回
 //一个对象，这个对象的value属性值为yield后跟的表达式，done属性的值为布尔值，表示是否可遍历。
+// 异步编程的解决方案
 
 {
     function* helloGenerator(){
@@ -134,7 +135,7 @@
     
 }
 
-// 7.实现一个状态机,generator的一个小应用
+// 7.实现一个状态机,,描述一个事物的状态，generator的一个小应用,
 {
     let clock = (function* (){
         while(true){
@@ -148,3 +149,75 @@
         clock.next();
     }
 }
+
+// 8.默认的iterator接口是部署在数据结构的[Symbol.iterator]属性上的，因此要为一个数据结构部署遍历器接口就得编写这个属性
+// 而Generator函数返回的就是个遍历器对象，所以可以直接将该函数赋值与数据结构的[Symbol.iterator]上
+{
+    let obj = {};
+    function* gen(){
+        yield 1;
+        yield 2;
+        yield 3;
+        return 4;
+    }
+    obj[Symbol.iterator] = gen;
+    for(let v of obj){
+        console.log('generator函数',v);
+    }
+}
+
+// 9.generator应用，重要的数据不应放在全局作用域下，影响性能，不够安全
+{
+    function choujia(count){
+        //抽奖逻辑
+        console.log(`还剩${count}次抽奖`);
+    }
+
+    function* resduie(count){
+         while(count>0){                        //形成了一个闭包，一直引用着count变量的作用域
+             count--;
+             yield choujia(count);
+         }
+    }
+    
+    let start = resduie(5);
+    //模拟抽奖行为
+    start.next()
+    start.next()
+    start.next()
+    start.next()
+    start.next()
+    start.next()
+    start.next()
+
+}
+
+// 10.长轮询的实现
+{
+    function* ajax(){
+        yield new Promise((resolve,reject) => {
+             setTimeout(() => {
+                    resolve({code:1});
+             },1000);
+        })
+    }
+
+    let pull = function (count) {
+        // count 查询次数
+        let generator = ajax();
+        let step = generator.next();
+        step.value.then(function(v){
+            if(v.code != 0 && count <5){
+                count++;
+                setTimeout(function(){
+                    console.log('wait');
+                    pull(count);
+                },1000);
+            }else{
+                console.log('获取最新数据')
+            }
+        })
+    }
+    pull(0);
+}
+
