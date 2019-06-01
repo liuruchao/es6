@@ -95,3 +95,40 @@
     Bar.name = 'liu';  //老写法
   
 }
+
+// 5.类的继承是通过extends关键字
+{
+    class Point{
+         constructor(x,y){
+             this.x = x;
+             this.y = y;
+         }
+
+         fatherMethod(){
+             console.log('这是个父类的方法')
+         }
+    }
+
+    // 继承父类的子类如果不先调用super,就使用this会报错
+    class ColorPoint extends Point{
+        constructor(x,y,color){
+            //this.color = color;     报错
+            super(x,y);      //调用父类的constructor，定义子类时必须调用
+            this.color = color;
+        }
+
+        childMethod(){
+            console.log('这是个子类的方法');
+            super.fatherMethod();   //调用父类的方法
+        }
+    }
+
+    let c = new ColorPoint(2,4,'red');
+    console.log(c)
+    console.log(c.childMethod())
+
+
+}
+
+// 6.super关键字，作为函数时只能用在子类的constructor中，代表父类的构造函数
+// 作为对象，用在静态方法中，指向父类，用在
