@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 手写xmlhttpRequest    同步
+        // let xhr = new XMLHttpRequest();
+        // xhr.open('post','http://daily.runlrc.site:8090/init',false);   //启动一个请求
+        // xhr.send(null);
+        // if(xhr.status >= 200 && xhr.status < 300){
+        // console.log(xhr.responseText);
+        // }else{
+        // console.log('error')
+        // }
+
+        //默认异步
+        function sendRequest(method,url,data=null,async=true){
+            let xhr = new XMLHttpRequest();
+            // 提示进度
+            xhr.onprogress = function(e){
+                // console.log('接受的字节数',e.loaded);
+                console.log(e)
+            }
+            xhr.open(method,url,async);
+            xhr.setRequestHeader('myhead','myhead1');
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urllencoded");
+            // xhr.timeout = 5000;
+            xhr.send(data);
+            xhr.onreadystatechange = function(){
+                // console.log(xhr.readyState);
+                if(xhr.readyState == 4){
+                    try{
+                        if((xhr.status >= 200 && xhr.status <300) || xhr.status == 304){
+                            console.log(xhr.responseText);
+                        }else{
+                            console.log('error');
+                        }
+                    }catch{
+                        console.log('超时')
+                    }
+                    
+                }
+            }
+
+            xhr.onload = function(){
+                console.log('该浏览器有xhr的load事件')
+            }
+        }
+        let form = new FormData();
+        form.append('name','liu')
+        sendRequest('post','http://daily.runlrc.site:8090/init',form);
+     </script>
+</body>
+</html>
+
+
+
