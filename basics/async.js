@@ -29,7 +29,7 @@
   // asyncPrint("hello wolrd", 1000)
 }
 
-// 实现一个休眠效果
+// 实现一个休眠的效果
 {
   function sleep(val, interval) {
     return new Promise(resolve => {
